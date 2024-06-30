@@ -10,6 +10,11 @@ Route::get('/', function () {
 });
 
 Route::get('/posts', function () {
+  //eager loading, lebih baik ini untuk mengatasi N+1 problem
+  // $posts = Post::with('author', 'category')->get();
+  // return view('posts', ['title' => 'Blog', 'posts' => $posts]);
+  
+  //lazy loading
   return view('posts', ['title' => 'Blog', 'posts' => Post::all()]);
 });
 
@@ -28,10 +33,21 @@ Route::get('/about', function () {
 Route::get('/authors/{user:username}', function (User $user) {
   //Bawaannya mencari berdasarkan id, jika ingin mencari berdasarkan
   //username, maka harus ditambah :username
+
+  //lazy eager loading
+  // $posts = $user->posts->load(['category', 'author']);
+  // return view('posts', ['title' => count($posts) . ' Articles by ' . $user->name, 'posts' => $user->posts]);
+
+  //lazy loading
   return view('posts', ['title' => count($user->posts) . ' Articles by ' . $user->name, 'posts' => $user->posts]);
 });
 
 Route::get('/categories/{category:slug}', function (Category $category) {
+  //lazy eager loading
+  // $posts = $category->posts->load(['category', 'author']);
+  // return view('posts', ['title' => 'Articles in Category: ' . $category->name, 'posts' => $posts]);
+
+  //lazy loading
   return view('posts', ['title' => 'Articles in Category: ' . $category->name, 'posts' => $category->posts]);
 });
 
